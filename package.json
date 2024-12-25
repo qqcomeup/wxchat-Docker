@@ -1,0 +1,15 @@
+{
+  "name": "wxchat-vercel",
+  "version": "1.0.0",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/node": "^2.0.0",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.1"
+  }
+}
