@@ -7,7 +7,7 @@ RUN apk add --no-cache tzdata nginx && \
 
 COPY --chmod=755 ./rootfs /
 
-EXPOSE 80
+EXPOSE 443
 
 ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]
