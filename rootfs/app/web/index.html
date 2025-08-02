@@ -69,7 +69,7 @@
         document.body.style.backgroundImage = "url('https://source.unsplash.com/random/1920x1080?nature,scenery,landscape')";
 
         function copyProxyLink() {
-            const proxyLink = `http://$host_public_ip`;
+            const proxyLink = `http://%%HOST_PUBLIC_IP%%`;
             navigator.clipboard.writeText(proxyLink.trim()).then(() => {
                 alert('代理链接已复制到剪贴板！');
             }).catch(err => {
