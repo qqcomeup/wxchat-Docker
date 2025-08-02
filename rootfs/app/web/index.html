@@ -61,20 +61,19 @@
 <body>
     <div class="container">
         <h1>微信代理搭建成功</h1>
-        <p>点击复制代理链接到MoviePilot的微信代理设置中</p>
+        <p>点击复制代理链接接到MoviePilot的微信代理设置中</p>
         <button class="copy-button" onclick="copyProxyLink()">复制微信代理链接</button>
     </div>
-
     <script>
+        // 设置随机背景
         document.body.style.backgroundImage = "url('https://source.unsplash.com/random/1920x1080?nature,scenery,landscape')";
-
+        // 复制当前页面完整URL
         function copyProxyLink() {
-            const proxyLink = `http://%%HOST_PUBLIC_IP%%`;
-            navigator.clipboard.writeText(proxyLink.trim()).then(() => {
+            const proxyLink = window.location.origin;
+            navigator.clipboard.writeText(proxyLink).then(() => {
                 alert('代理链接已复制到剪贴板！');
             }).catch(err => {
-                console.error('无法复制链接: ', err);
-                alert('复制失败，请检查浏览器权限或手动复制。');
+                alert('复制失败，请手动复制。');
             });
         }
     </script>
