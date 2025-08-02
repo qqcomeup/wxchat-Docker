@@ -65,16 +65,41 @@
         <button class="copy-button" onclick="copyProxyLink()">复制微信代理链接</button>
     </div>
     <script>
-        // 设置随机背景（Bing 每日壁纸）
+        // 设置随机背景（Paugram 壁纸接口）
         document.body.style.backgroundImage = "url('https://api.paugram.com/wallpaper/')";
-        // 复制当前页面完整URL
+        // 兼容所有浏览器的复制逻辑
         function copyProxyLink() {
             const proxyLink = window.location.origin;
-            navigator.clipboard.writeText(proxyLink).then(() => {
-                alert('代理链接已复制到剪贴板！');
-            }).catch(err => {
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(proxyLink).then(() => {
+                    alert('代理链接已复制到剪贴板！');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(proxyLink);
+                });
+            } else {
+                fallbackCopyTextToClipboard(proxyLink);
+            }
+        }
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('代理链接已复制到剪贴板！');
+                } else {
+                    alert('复制失败，请手动复制。');
+                }
+            } catch (err) {
                 alert('复制失败，请手动复制。');
-            });
+            }
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
