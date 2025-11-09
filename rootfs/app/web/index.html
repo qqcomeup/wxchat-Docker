@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>微信代理 · MoviePilot</title>
+    <link rel="icon" href="assets/wechat.svg" type="image/svg+xml">
     <meta name="description" content="MoviePilot 微信代理部署成功，可一键复制代理链接并检测出口 IP。">
     <style>
         :root {
@@ -32,7 +33,7 @@
         }
         .container {
             width: 100%;
-            max-width: 560px;
+            max-width: 400px;
             background-color: var(--bg-overlay);
             backdrop-filter: saturate(140%) blur(4px);
             padding: 22px;
@@ -217,7 +218,6 @@
             <h1>微信代理服务</h1>
             <p class="subtitle">WeChat Proxy Service</p>
         </div>
-        <p class="desc">将下方链接复制到 MoviePilot 的“微信代理”设置中即可生效。</p>
         <div class="row" aria-label="代理链接">
             <input id="proxyInput" class="input" type="text" readonly aria-readonly="true" aria-label="代理链接">
             <button class="btn" onclick="copyProxyLink()" aria-label="复制代理链接">复制</button>
