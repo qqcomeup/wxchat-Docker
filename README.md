@@ -2,8 +2,11 @@
 
 [![Build](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/build.yml/badge.svg)](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/build.yml) [![Docker readme update](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/readme_update.yml/badge.svg)](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/readme_update.yml)
 
-SECRET_PATH=自定义/token
-访问ip+端口/token
+增加微信上传图片临时端口代理
+
+SECRET_PATH=自定义token
+访问http://ip:端口/token
+
 或许增加一丢丢安全性防止被扫
 
 ```bash
