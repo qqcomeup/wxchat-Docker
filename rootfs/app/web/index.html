@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>微信代理 · MoviePilot</title>
-    <link rel="icon" href="assets/wechat.svg" type="image/svg+xml">
+    <link rel="icon" href="./assets/wechat.svg" type="image/svg+xml">
     <meta name="description" content="MoviePilot 微信代理部署成功，可一键复制代理链接并检测出口 IP。">
     <style>
         :root {
@@ -186,8 +186,20 @@
             clearTimeout(state.hideToastTimer);
             state.hideToastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
         }
+        function getSecretBase() {
+            const path = window.location.pathname.replace(/\/+$/, '');
+            const seg = path.split('/').filter(Boolean)[0];
+            return seg ? `${window.location.origin}/${seg}` : window.location.origin;
+        }
+        function setAssetPaths() {
+            const base = getSecretBase();
+            const logo = document.querySelector('.logo-img');
+            if (logo) logo.src = `${base}/assets/wechat.svg`;
+            const icon = document.querySelector('link[rel="icon"]');
+            if (icon) icon.href = `${base}/assets/wechat.svg`;
+        }
         async function copyProxyLink() {
-            const proxyLink = window.location.origin;
+            const proxyLink = getSecretBase();
             try {
                 if (navigator.clipboard?.writeText) {
                     await navigator.clipboard.writeText(proxyLink);
@@ -206,7 +218,8 @@
         }
         function init() {
             document.body.style.backgroundImage = "url('https://api.paugram.com/wallpaper/')";
-            document.getElementById('proxyInput').value = window.location.origin;
+            document.getElementById('proxyInput').value = getSecretBase();
+            setAssetPaths();
         }
         document.addEventListener('DOMContentLoaded', init);
     </script>
@@ -214,7 +227,7 @@
 <body>
     <div class="container" role="main">
         <div class="hero">
-            <div class="logo" aria-hidden="true"><img class="logo-img" src="assets/wechat.svg" alt="WeChat logo"></div>
+            <div class="logo" aria-hidden="true"><img class="logo-img" src="" alt="WeChat logo"></div>
             <h1>微信代理服务</h1>
             <p class="subtitle">WeChat Proxy Service</p>
         </div>

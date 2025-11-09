@@ -15,6 +15,15 @@ echo "Public IP found: $PUBLIC_IP"
 # 注意：使用不同的分隔符（#）来避免IP地址中的斜杠引起冲突
 sed -i "s#%%HOST_PUBLIC_IP%%#$PUBLIC_IP#g" /app/web/index.html
 
+# 处理密钥前缀（默认 moviepilot，可通过环境变量 SECRET_PATH 覆盖）
+SECRET_PATH=${SECRET_PATH:-moviepilot}
+echo "Using SECRET_PATH: $SECRET_PATH"
+
+# 用模板生成最终的 Nginx 站点配置
+if [ -f /etc/nginx/http.d/default.conf.template ]; then
+  sed "s#__SECRET_PATH__#${SECRET_PATH}#g" /etc/nginx/http.d/default.conf.template > /etc/nginx/http.d/default.conf
+fi
+
 echo "Starting Nginx..."
 # 启动nginx
-exec nginx -g 'daemon off;' 
+exec nginx -g 'daemon off;'

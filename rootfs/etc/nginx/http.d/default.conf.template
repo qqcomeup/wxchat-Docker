@@ -1,0 +1,67 @@
+server {
+    listen       38080;
+    listen  [::]:38080;
+
+    # 仅允许密钥前缀访问静态站点与路由
+    location = /__SECRET_PATH__ {
+        root /app/web;
+        try_files /index.html =404;
+    }
+
+    location ^~ /__SECRET_PATH__/assets/ {
+        alias /app/web/assets/;
+        # 缓存与类型由 mime.types 管理
+    }
+
+    location ^~ /__SECRET_PATH__/ {
+        root /app/web;
+        try_files $uri /index.html;
+        sub_filter '$remote_addr' $remote_addr;
+        sub_filter_once off;
+    }
+
+    # 企业微信接口仅在密钥前缀下可用
+    # 显式列出常用接口（按需覆盖，优先于通配）
+    location ^~ /__SECRET_PATH__/cgi-bin/gettoken {
+        rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
+        proxy_pass https://qyapi.weixin.qq.com;
+        proxy_set_header Host qyapi.weixin.qq.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location ^~ /__SECRET_PATH__/cgi-bin/message/send {
+        rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
+        proxy_pass https://qyapi.weixin.qq.com;
+        proxy_set_header Host qyapi.weixin.qq.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location ^~ /__SECRET_PATH__/cgi-bin/menu/create {
+        rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
+        proxy_pass https://qyapi.weixin.qq.com;
+        proxy_set_header Host qyapi.weixin.qq.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location ^~ /__SECRET_PATH__/cgi-bin/media/upload {
+        rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
+        proxy_pass https://qyapi.weixin.qq.com;
+        proxy_set_header Host qyapi.weixin.qq.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    location ^~ /__SECRET_PATH__/cgi-bin/ {
+        # 去掉密钥前缀再转发到上游 /cgi-bin/
+        rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
+        proxy_pass https://qyapi.weixin.qq.com;
+        proxy_set_header Host qyapi.weixin.qq.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    # 禁止根路径下直接访问 /cgi-bin/*
+    location /cgi-bin/ { return 404; }
+
+    # 其余路径一律返回 404，避免泄露入口
+    location / { return 404; }
+}
