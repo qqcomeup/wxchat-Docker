@@ -2,21 +2,27 @@
 
 [![Build](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/build.yml/badge.svg)](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/build.yml) [![Docker readme update](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/readme_update.yml/badge.svg)](https://github.com/DDS-Derek/wxchat-Docker/actions/workflows/readme_update.yml)
 
+SECRET_PATH=自定义/token
+访问ip+端口/token
+或许增加一丢丢安全性防止被扫
+
 ```bash
 docker run -d \
-    --name wxchat \
-    --restart=always \
-    -p 80:80 \
-    ddsderek/wxchat:latest
+  --name wxtets \
+  -p 56668:38080 \
+  -e SECRET_PATH="token" \
+  --restart always \
+  ck939410/wxchat:bata
 ```
 
 ```yaml
-version: '3.3'
 services:
     wxchat:
-        container_name: wxchat
+        container_name: wxtets
         restart: always
+        environment:
+         - SECRET_PATH=token
         ports:
-            - '80:80'
-        image: 'ddsderek/wxchat:latest'
+            - 56668:38080
+        image: ck939410/wxchat:bata
 ```
