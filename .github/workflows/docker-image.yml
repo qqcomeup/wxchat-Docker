@@ -29,6 +29,6 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/wxchat:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/wxchat:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/wxchat:bata
+          ${{ secrets.DOCKERHUB_USERNAME }}/wxchat:bata
         platforms: linux/amd64,linux/arm64 
