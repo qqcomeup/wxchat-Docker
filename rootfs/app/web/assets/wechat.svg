@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92">
+  <circle cx="46" cy="46" r="46" fill="#07C160"/>
+  <!-- Large bubble -->
+  <circle cx="36" cy="40" r="16" fill="#ffffff"/>
+  <polygon points="28,52 30,44 22,48" fill="#ffffff"/>
+  <circle cx="30" cy="38" r="3" fill="#07C160"/>
+  <circle cx="42" cy="38" r="3" fill="#07C160"/>
+  <!-- Small bubble -->
+  <circle cx="58" cy="52" r="13" fill="#ffffff"/>
+  <polygon points="54,64 56,58 49,61" fill="#ffffff"/>
+  <circle cx="53" cy="50" r="2.5" fill="#07C160"/>
+  <circle cx="61" cy="50" r="2.5" fill="#07C160"/>
+</svg>

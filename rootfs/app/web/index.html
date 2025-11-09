@@ -1,106 +1,248 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>微信代理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>微信代理 · MoviePilot</title>
+    <meta name="description" content="MoviePilot 微信代理部署成功，可一键复制代理链接并检测出口 IP。">
     <style>
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0b5ed7;
+            --text: #2c3e50;
+            --muted: #7f8c8d;
+            --bg-overlay: rgba(255,255,255,0.88);
+            --shadow: 0 8px 20px rgba(0,0,0,0.12);
+            --radius-outer: 12px;
+            --radius-inner: 12px;
+            --inset-x: 16px; /* unified inner horizontal padding for content */
+        }
+        * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            color: #333;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            color: var(--text);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            padding: 24px;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.85);
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 560px;
+            background-color: var(--bg-overlay);
+            backdrop-filter: saturate(140%) blur(4px);
+            padding: 22px;
+            border-radius: var(--radius-outer);
+            box-shadow: var(--shadow);
+            overflow: hidden; /* keep children inside the rounded border */
         }
         h1 {
-            font-size: 2.8em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 600;
+            font-size: 1.8rem;
+            margin: 0 0 10px;
+            font-weight: 700;
         }
-        p {
-            color: #7f8c8d;
-            font-size: 1.2em;
-            margin-bottom: 35px;
+        p.desc {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 0.95rem;
         }
-        .copy-button {
-            background-color: #007bff;
-            color: white;
+        .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+        .input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            font-size: 0.92rem;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: #fff;
             border: none;
-            padding: 15px 35px;
-            font-size: 1.25em;
-            font-weight: bold;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            border-bottom: 4px solid #0056b3;
-            outline: none;
-            transition: all 0.15s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color .15s ease, transform .08s ease;
+            box-shadow: none; /* avoid overflow outside container border */
         }
-        .copy-button:hover {
-            background-color: #0069d9;
+        .btn:hover { background-color: var(--primary-dark); }
+        .btn:active { transform: translateY(1px); }
+        .hint { display: none; }
+        .toast {
+            position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+            background: rgba(0,0,0,0.82); color: #fff; padding: 10px 14px; border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            opacity: 0; pointer-events: none; transition: opacity .15s ease;
         }
-        .copy-button:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        .toast.show { opacity: 1; }
+        @media (max-width: 520px) {}
+        /* hero */
+        .hero { text-align: center; margin-bottom: 18px; }
+        .logo { width: 64px; height: 64px; margin: 0 auto 8px; }
+        .logo-img { width: 64px; height: 64px; border-radius: 50%; box-shadow: 0 6px 16px rgba(7,193,96,0.22); display: block; }
+        .subtitle { margin: 4px 0 0; color: var(--muted); }
+        /* status banner */
+        .status {
+            margin-top: 12px;
+            padding: 12px var(--inset-x);
+            border-radius: var(--radius-inner);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #6f42c1 0%, #7aa2f7 100%);
+        }
+
+        .status::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: progress-sweep 2.5s linear infinite;
+        }
+
+        @keyframes progress-sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .status .title { font-size: 1.2rem; font-weight: 800; position: relative; padding-left: 18px; z-index: 1; }
+        .status .dot { width: 8px; height: 8px; border-radius: 50%; background: #27ae60; box-shadow: 0 0 6px rgba(39,174,96,0.6); position: absolute; left: 0; top: 50%; transform: translateY(-50%); }
+        .status .sub { margin-top: 4px; opacity: 0.92; z-index: 1; position: relative; }
+
+        /* info list */
+        .info { 
+            margin-top: 12px; 
+            background: #fff; 
+            border: 1px solid #eef2f7; 
+            border-radius: var(--radius-inner); 
+            overflow: hidden; 
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info td {
+            padding: 10px var(--inset-x);
+            border-top: 1px solid #f1f5f9;
+        }
+        .info tr:first-child td {
+            border-top: none;
+        }
+        .info .label { 
+            color: var(--muted); 
+            width: 120px; /* fixed width for label column */
+            white-space: nowrap;
+        }
+        .info .value { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            font-weight: 500; 
+            color: var(--text); 
+        }
+        .check {
+            width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 6px; background: #e6f4ea; color: #27ae60; font-size: 13px;
+            box-shadow: inset 0 0 0 1px #cce9d5;
+        }
+        /* compact overrides */
+        .hero { margin-bottom: 12px; }
+        .logo { width: 72px; height: 72px; margin: 0 auto 8px; }
+        .logo-img { width: 72px; height: 72px; border-radius: 50%; box-shadow: 0 6px 16px rgba(7,193,96,0.2); display: block; }
+        /* input group so button stays inside the border */
+        .container .row:first-of-type {
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            border-radius: var(--radius-inner);
+            padding: 0;
+            overflow: hidden;
+            gap: 0;
+        }
+        .container .row:first-of-type .input {
+            border: none;
+            border-right: 1px solid #e5e7eb;
+            border-radius: var(--radius-inner) 0 0 var(--radius-inner);
+            height: 40px;
+            padding-left: var(--inset-x);
+        }
+        .container .row:first-of-type .btn {
+            margin: 0;
+            border-radius: 0 var(--radius-inner) var(--radius-inner) 0;
+            height: 40px;
+            padding: 0 14px;
         }
     </style>
+    <script>
+        const state = { hideToastTimer: null };
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(state.hideToastTimer);
+            state.hideToastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+        }
+        async function copyProxyLink() {
+            const proxyLink = window.location.origin;
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(proxyLink);
+                    showToast('代理链接已复制到剪贴板');
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = proxyLink; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta); ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    showToast(ok ? '代理链接已复制到剪贴板' : '复制失败，请手动复制');
+                }
+            } catch (_) {
+                showToast('复制失败，请手动复制');
+            }
+        }
+        function init() {
+            document.body.style.backgroundImage = "url('https://api.paugram.com/wallpaper/')";
+            document.getElementById('proxyInput').value = window.location.origin;
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </head>
 <body>
-    <div class="container">
-        <h1>微信代理搭建成功</h1>
-        <p>点击复制代理链接接到MoviePilot的微信代理设置中</p>
-        <button class="copy-button" onclick="copyProxyLink()">复制微信代理链接</button>
+    <div class="container" role="main">
+        <div class="hero">
+            <div class="logo" aria-hidden="true"><img class="logo-img" src="assets/wechat.svg" alt="WeChat logo"></div>
+            <h1>微信代理服务</h1>
+            <p class="subtitle">WeChat Proxy Service</p>
+        </div>
+        <p class="desc">将下方链接复制到 MoviePilot 的“微信代理”设置中即可生效。</p>
+        <div class="row" aria-label="代理链接">
+            <input id="proxyInput" class="input" type="text" readonly aria-readonly="true" aria-label="代理链接">
+            <button class="btn" onclick="copyProxyLink()" aria-label="复制代理链接">复制</button>
+        </div>
+        <div class="status" aria-label="运行状态">
+            <div class="title"><span class="dot"></span><span class="marquee">服务运行正常</span></div>
+            <div class="sub">System Running Successfully</div>
+        </div>
+        <table class="info" aria-label="服务信息">
+            <tbody>
+                <tr>
+                    <td class="label">服务类型</td>
+                    <td class="value">企业微信反代</td>
+                </tr>
+                <tr>
+                    <td class="label">功能说明</td>
+                    <td class="value">消息反馈、图片反馈</td>
+                </tr>
+                <tr>
+                    <td class="label">交流频道</td>
+                    <td class="value"><a href="https://t.me/areyouok32" target="_blank" rel="noopener">https://t.me/areyouok32</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <script>
-        // 设置随机背景（Paugram 壁纸接口）
-        document.body.style.backgroundImage = "url('https://api.paugram.com/wallpaper/')";
-        // 兼容所有浏览器的复制逻辑
-        function copyProxyLink() {
-            const proxyLink = window.location.origin;
-            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-                navigator.clipboard.writeText(proxyLink).then(() => {
-                    alert('代理链接已复制到剪贴板！');
-                }).catch(() => {
-                    fallbackCopyTextToClipboard(proxyLink);
-                });
-            } else {
-                fallbackCopyTextToClipboard(proxyLink);
-            }
-        }
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.top = 0;
-            textArea.style.left = 0;
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    alert('代理链接已复制到剪贴板！');
-                } else {
-                    alert('复制失败，请手动复制。');
-                }
-            } catch (err) {
-                alert('复制失败，请手动复制。');
-            }
-            document.body.removeChild(textArea);
-        }
-    </script>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
