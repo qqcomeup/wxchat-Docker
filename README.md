@@ -9,6 +9,10 @@ SECRET_PATH=自定义token
 
 或许增加一丢丢安全性防止被扫
 
+## 效果图
+
+![效果图](https://github.com/qqcomeup/wxchat-Docker/blob/master/xg.jpg?raw=true)
+
 ```bash
 docker run -d \
   --name wxtets \
