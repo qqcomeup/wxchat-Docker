@@ -28,6 +28,11 @@ server {
         proxy_set_header Host qyapi.weixin.qq.com;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
     }
     location ^~ /__SECRET_PATH__/cgi-bin/message/send {
         rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
@@ -35,6 +40,11 @@ server {
         proxy_set_header Host qyapi.weixin.qq.com;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
     }
     location ^~ /__SECRET_PATH__/cgi-bin/menu/create {
         rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
@@ -42,6 +52,11 @@ server {
         proxy_set_header Host qyapi.weixin.qq.com;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
     }
     location ^~ /__SECRET_PATH__/cgi-bin/media/upload {
         rewrite ^/__SECRET_PATH__(/cgi-bin/.*)$ $1 break;
@@ -49,6 +64,11 @@ server {
         proxy_set_header Host qyapi.weixin.qq.com;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
     }
     location ^~ /__SECRET_PATH__/cgi-bin/ {
         # 去掉密钥前缀再转发到上游 /cgi-bin/
@@ -57,6 +77,18 @@ server {
         proxy_set_header Host qyapi.weixin.qq.com;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+    }
+
+    # Health check endpoint
+    location ^~ /__SECRET_PATH__/health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
     }
 
     # 出口 IP 查询代理（仅在密钥前缀下可用，以避免被扫）

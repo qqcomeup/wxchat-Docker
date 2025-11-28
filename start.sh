@@ -21,7 +21,13 @@ echo "Using SECRET_PATH: $SECRET_PATH"
 
 # 用模板生成最终的 Nginx 站点配置
 if [ -f /etc/nginx/http.d/default.conf.template ]; then
+  echo "Found template file, generating configuration..."
   sed "s#__SECRET_PATH__#${SECRET_PATH}#g" /etc/nginx/http.d/default.conf.template > /etc/nginx/http.d/default.conf
+  echo "Generated nginx configuration:"
+  cat /etc/nginx/http.d/default.conf
+  echo "Configuration generation complete."
+else
+  echo "ERROR: Template file not found!"
 fi
 
 echo "Starting Nginx..."

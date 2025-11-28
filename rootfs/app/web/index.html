@@ -221,6 +221,20 @@
         const ipv4Regex = /(?:\d{1,3}\.){3}\d{1,3}/;
         async function attemptDetectOnce() {
             const base = getSecretBase();
+            
+            // First test if the backend is responsive
+            try {
+                const healthResp = await fetch(`${base}/health`, { signal: AbortSignal.timeout(5000) });
+                if (!healthResp.ok) {
+                    console.warn('Backend health check failed');
+                    return null;
+                }
+            } catch (e) {
+                console.warn('Backend not reachable, using fallback services');
+                // Skip proxy endpoints and go directly to fallback
+                return await attemptDirectFallback();
+            }
+            
             const sources = [
                 `${base}/extip/ddnspod`,
                 `${base}/extip/ipw`,
@@ -245,6 +259,11 @@
                 } catch (_) { /* ignore and try next */ }
             }
             
+            // If proxy endpoints fail, try direct fallback
+            return await attemptDirectFallback();
+        }
+        
+        async function attemptDirectFallback() {
             // Fallback: Direct external services (CORS might block this, but worth trying)
             const fallbackSources = [
                 'https://ipv4.ddnspod.com',
