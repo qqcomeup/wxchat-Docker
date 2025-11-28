@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # 获取公网IP（尝试多个IP查询服务，确保可靠性）
-PUBLIC_IP=$(curl -s ip.sb || curl -s ifconfig.me || curl -s icanhazip.com)
+PUBLIC_IP=$(curl -s --connect-timeout 10 --max-time 10 ip.sb || curl -s --connect-timeout 10 --max-time 10 ifconfig.me || curl -s --connect-timeout 10 --max-time 10 icanhazip.com)
 
 # 如果获取失败，使用错误信息作为IP
 if [ -z "$PUBLIC_IP" ]; then
@@ -25,5 +25,11 @@ if [ -f /etc/nginx/http.d/default.conf.template ]; then
 fi
 
 echo "Starting Nginx..."
+
+# Test DNS resolution before starting nginx
+echo "Testing DNS resolution..."
+nslookup ipv4.ddnspod.com || echo "DNS resolution failed for ipv4.ddnspod.com"
+nslookup 4.ipw.cn || echo "DNS resolution failed for 4.ipw.cn"
+
 # 启动nginx
 exec nginx -g 'daemon off;'
