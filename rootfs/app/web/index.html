@@ -230,6 +230,8 @@
                 `${base}/extip/v4b`,
                 `${base}/extip/v6a`
             ];
+            
+            // Try proxy endpoints first
             for (const url of sources) {
                 try {
                     const controller = new AbortController();
@@ -242,6 +244,28 @@
                     if (match) return match[0];
                 } catch (_) { /* ignore and try next */ }
             }
+            
+            // Fallback: Direct external services (CORS might block this, but worth trying)
+            const fallbackSources = [
+                'https://ipv4.ddnspod.com',
+                'https://4.ipw.cn',
+                'https://ip.3322.net',
+                'https://myip.ipip.net'
+            ];
+            
+            for (const url of fallbackSources) {
+                try {
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 2500);
+                    const resp = await fetch(url, { signal: controller.signal, mode: 'cors' });
+                    clearTimeout(timer);
+                    if (!resp.ok) continue;
+                    const text = await resp.text();
+                    const match = text.match(ipv4Regex);
+                    if (match) return match[0];
+                } catch (_) { /* ignore and try next */ }
+            }
+            
             return null;
         }
         async function detectPublicIP() {
@@ -249,7 +273,11 @@
             const btn = document.getElementById('btnDetect');
             state.keepTrying = true;
             if (btn) btn.disabled = true;
-            while (state.keepTrying) {
+            let attempts = 0;
+            const maxAttempts = 3;
+            
+            while (state.keepTrying && attempts < maxAttempts) {
+                attempts++;
                 const ip = await attemptDetectOnce();
                 if (ip) {
                     ipSpan.textContent = ip;
@@ -258,8 +286,15 @@
                     if (btn) btn.disabled = false;
                     return;
                 }
-                await new Promise(r => setTimeout(r, 3000));
+                if (attempts < maxAttempts) {
+                    await new Promise(r => setTimeout(r, 3000));
+                }
             }
+            
+            // If we get here, all attempts failed
+            ipSpan.textContent = '检测失败';
+            showToast('IP 检测失败，请检查网络连接或联系管理员');
+            if (btn) btn.disabled = false;
         }
         async function copyPublicIP() {
             const ipSpan = document.getElementById('publicIp');
