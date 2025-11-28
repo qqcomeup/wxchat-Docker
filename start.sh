@@ -31,11 +31,5 @@ else
 fi
 
 echo "Starting Nginx..."
-
-# Test DNS resolution before starting nginx
-echo "Testing DNS resolution..."
-nslookup ipv4.ddnspod.com || echo "DNS resolution failed for ipv4.ddnspod.com"
-nslookup 4.ipw.cn || echo "DNS resolution failed for 4.ipw.cn"
-
 # 启动nginx
 exec nginx -g 'daemon off;'
