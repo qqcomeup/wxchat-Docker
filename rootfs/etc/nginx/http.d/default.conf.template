@@ -84,6 +84,56 @@ server {
         proxy_send_timeout 30s;
     }
 
+    # IP检测端点 - 用于检测服务器出口IP
+    location = /__SECRET_PATH__/extip/ddnspod {
+        proxy_pass https://ipv4.ddnspod.com/;
+        proxy_set_header Host ipv4.ddnspod.com;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+    location = /__SECRET_PATH__/extip/ipw {
+        proxy_pass https://4.ipw.cn/;
+        proxy_set_header Host 4.ipw.cn;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+    location = /__SECRET_PATH__/extip/3322 {
+        proxy_pass https://ip.3322.net/;
+        proxy_set_header Host ip.3322.net;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+    location = /__SECRET_PATH__/extip/ipip {
+        proxy_pass https://myip.ipip.net/;
+        proxy_set_header Host myip.ipip.net;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+    location = /__SECRET_PATH__/extip/ipsb {
+        proxy_pass https://api.ip.sb/ip;
+        proxy_set_header Host api.ip.sb;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+    location = /__SECRET_PATH__/extip/ipify {
+        proxy_pass https://api.ipify.org/;
+        proxy_set_header Host api.ipify.org;
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 5s;
+    }
+
     # 禁止根路径下直接访问 /cgi-bin/*
     location /cgi-bin/ { return 404; }
 
