@@ -11,8 +11,9 @@ SECRET_PATH=自定义token
 
 ## 效果图
 
-![效果图]
-https://raw.githubusercontent.com/qqcomeup/wxchat-Docker/refs/heads/master/xg.jpg
+## 效果图
+![MoviePilot 微信转发代理效果图](https://raw.githubusercontent.com/qqcomeup/wxchat-Docker/refs/heads/master/xg.jpg)
+```bash
 
 ```bash
 docker run -d \
