@@ -11,7 +11,8 @@ SECRET_PATH=自定义token
 
 ## 效果图
 
-![效果图](https://github.com/qqcomeup/wxchat-Docker/blob/master/xg.jpg?raw=true))
+![效果图]
+https://raw.githubusercontent.com/qqcomeup/wxchat-Docker/refs/heads/master/xg.jpg
 
 ```bash
 docker run -d \
