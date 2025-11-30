@@ -251,15 +251,15 @@
                 `${base}/extip/ipw`,
                 `${base}/extip/3322`,
                 `${base}/extip/ipip`,
-                `${base}/extip/v4a`,
-                `${base}/extip/v4b`
+                `${base}/extip/ipsb`,
+                `${base}/extip/ipify`
             ];
             
             for (const service of services) {
                 try {
                     const response = await fetch(service, { 
                         method: 'GET',
-                        signal: AbortSignal.timeout(5000)
+                        signal: AbortSignal.timeout(8000)
                     });
                     
                     if (!response.ok) continue;
