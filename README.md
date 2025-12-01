@@ -10,6 +10,9 @@ SECRET_PATH=自定义token
 或许增加一丢丢安全性防止被扫
 
 ## 效果图
+测试地址
+http://66.181.36.237:38080/moviepilot
+
 ![MoviePilot 微信转发代理效果图](https://raw.githubusercontent.com/qqcomeup/wxchat-Docker/refs/heads/master/xg.jpg)
 ```bash
 docker run -d \
